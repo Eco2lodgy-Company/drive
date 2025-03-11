@@ -4,6 +4,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import ProductScreen from '../app/clients/ProductScreen';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -33,7 +34,7 @@ export default function RootLayout() {
         <Stack.Screen name="clients/login" options={{ presentation: 'modal' }} />
         <Stack.Screen name="clients/signup" options={{ presentation: 'modal' }} />
         <Stack.Screen name="clients/home" options={{ presentation: 'modal',headerShown: false }} />
-        <Stack.Screen name="clients/productCard" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="clients/productScreen" options={{ presentation: 'modal',headerShown: false }}  />
         <Stack.Screen name="clients/cart" options={{ presentation: 'modal' }} />
  
 

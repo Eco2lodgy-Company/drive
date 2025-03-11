@@ -1,22 +1,21 @@
-// HomeScreen.js
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   Image,
   StyleSheet,
-  FlatList,
+  ScrollView,
   TouchableOpacity,
   SafeAreaView,
-  ScrollView,
-  Dimensions,
-  TextInput,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import { useRouter } from 'expo-router';
-const HomeScreen = () => {
-  const [numColumns, setNumColumns] = useState(2);
-  const router = useRouter();
+import { useRoute } from '@react-navigation/native';
+import { useLocalSearchParams } from 'expo-router';
+
+
+const ProductScreen = ({  }) => {
+  const { productId } = useLocalSearchParams(); 
+  console.log('Product ID:', productId); 
   const products = [
     { id: '1', name: 'T-Shirt Black', price: 29.99, shop: 'Noor Boutique', image: 'https://images.unsplash.com/photo-1519996529931-28324d5a630e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
     { id: '2', name: 'Jeans Blue', price: 59.99, shop: 'Fashion Hub', image: 'https://plus.unsplash.com/premium_photo-1667049290968-d0e2b9c36e01?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
@@ -36,102 +35,45 @@ const HomeScreen = () => {
 
   ];
 
-  const categories = [
-    { id: '1', name: 'Clothing' },
-    { id: '2', name: 'Shoes' },
-    { id: '3', name: 'Accessories' },
-    { id: '4', name: 'Bags' },
-    { id: '5', name: 'Jewelry' },
-  ];
+  // Récupération du produit basé sur l'ID
+  const product = products.find(item => item.id === productId);
 
-  useEffect(() => {
-    const updateLayout = () => {
-      const screenWidth = Dimensions.get('window').width;
-      setNumColumns(screenWidth > 768 ? 5 : 2);
-    };
-    updateLayout();
-    const subscription = Dimensions.addEventListener('change', updateLayout);
-    return () => subscription?.remove();
-  }, []);
-
-  const handleAddToCart = (product) => {
+  const handleAddToCart = () => {
     console.log(`Added ${product.name} to cart`);
+    // Ajoutez ici votre logique pour ajouter au panier
   };
-
-  const renderProductCard = ({ item }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() => router.push('/clients/ProductScreen?productId=' + item.id)}
-
-    >
-      <Image source={{ uri: item.image }} style={styles.cardImage} />
-      <View style={styles.cardContent}>
-        <Text style={styles.cardName}>{item.name}</Text>
-        <Text style={styles.cardShop}>{item.shop}</Text>
-        <View style={styles.cardFooter}>
-          <Text style={styles.cardPrice}>${item.price.toFixed(2)}</Text>
-          <TouchableOpacity style={styles.addToCartButton} onPress={() => handleAddToCart(item)}>
-            <Icon name="plus" size={16} color="#fff" />
-          </TouchableOpacity>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-  
-
-  const renderCategoryCard = ({ item }) => (
-    <TouchableOpacity style={styles.categoryCard}>
-      <Text style={styles.categoryText}>{item.name}</Text>
-    </TouchableOpacity>
-  );
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* App Bar with "Shop by Noor" */}
+      {/* App Bar */}
       <View style={styles.appBar}>
         <Text style={styles.appName}>Shop by Noor</Text>
-        <TouchableOpacity style={styles.notificationButton}>
-          <Icon name="bell" size={24} color="#DD6B20" />
-        </TouchableOpacity>
       </View>
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Icon name="search" size={20} color="#38A169" style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search products..."
-          placeholderTextColor="#718096"
-        />
-      </View>
+      {/* Contenu défilant */}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Image du produit */}
+        <Image source={{ uri: product.image }} style={styles.productImage} />
 
-      {/* Categories Carousel */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.categoryContainer}
-        contentContainerStyle={styles.categoryContent}
-      >
-        {categories.map((category) => (
-          <View key={category.id}>{renderCategoryCard({ item: category })}</View>
-        ))}
+        {/* Détails du produit */}
+        <View style={styles.detailsContainer}>
+          <Text style={styles.productName}>{product.name}</Text>
+          <Text style={styles.productShop}>{product.shop}</Text>
+          <Text style={styles.productPrice}>${product.price.toFixed(2)}</Text>
+          {/* Description à ajouter si nécessaire */}
+          <Text style={styles.productDescription}>Description</Text>
+
+          {/* Bouton Ajouter au panier */}
+          <TouchableOpacity style={styles.addToCartButton} onPress={handleAddToCart}>
+            <Text style={styles.addToCartText}>Add to Cart</Text>
+            <Icon name="shopping-cart" size={20} color="#fff" style={styles.cartIcon} />
+          </TouchableOpacity>
+        </View>
       </ScrollView>
-
-      {/* Products Grid */}
-      <FlatList
-        data={products}
-        renderItem={renderProductCard}
-        keyExtractor={(item) => item.id}
-        numColumns={numColumns}
-        key={numColumns}
-        columnWrapperStyle={styles.row}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
-      />
 
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Home')}>
           <Icon name="home" size={24} color="#38A169" />
           <Text style={styles.navText}>Home</Text>
         </TouchableOpacity>
@@ -139,7 +81,7 @@ const HomeScreen = () => {
           <Icon name="search" size={24} color="#38A169" />
           <Text style={styles.navText}>Search</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Cart')}>
           <Icon name="shopping-cart" size={24} color="#38A169" />
           <Text style={styles.navText}>Cart</Text>
         </TouchableOpacity>
@@ -157,10 +99,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F7FAFC', // Blanc cassé
   },
-  // App Bar Styles
   appBar: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     padding: 15,
     backgroundColor: '#fff',
@@ -170,143 +111,74 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2D3748', // Gris sombre pour contraste
+    color: '#2D3748', // Gris sombre
   },
-  notificationButton: {
-    padding: 10,
+  scrollContent: {
+    paddingBottom: 80, // Espace pour la barre de navigation
   },
-  // Search Bar Styles
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 25,
-    marginHorizontal: 15,
-    marginVertical: 10,
-    paddingHorizontal: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  searchIcon: {
-    marginRight: 10,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-    color: '#2D3748',
-    paddingVertical: 8,
-  },
-  // Category Carousel Styles
-  categoryContainer: {
-    paddingVertical: 10,
-  },
-  categoryContent: {
-    paddingHorizontal: 15,
-  },
-  categoryCard: {
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    paddingVertical: 15,
-    paddingHorizontal: 15,
-    marginRight: 10,
-    minWidth: 100,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#38A169', // Vert pour les bordures
-  },
-  categoryText: {
-    fontSize: 14,
-    color: '#38A169', // Vert pour le texte
-    fontWeight: '500',
-  },
-  // Product Card Styles
-  listContent: {
-    paddingHorizontal: 15,
-    paddingBottom: 80,
-  },
-  row: {
-    justifyContent: 'space-between',
-    marginBottom: 15,
-  },
-  card: {
-    width: Dimensions.get('window').width > 768 ? '18%' : '48%',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    overflow: 'hidden',
-    margin: 2,
-  },
-  cardImage: {
+  productImage: {
     width: '100%',
-    height: 150,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    height: 300,
+    resizeMode: 'cover',
   },
-  cardContent: {
-    padding: 10,
+  detailsContainer: {
+    padding: 15,
   },
-  cardName: {
-    fontSize: 16,
-    fontWeight: '600',
+  productName: {
+    fontSize: 24,
+    fontWeight: 'bold',
     color: '#2D3748',
-    marginBottom: 3,
-  },
-  cardShop: {
-    fontSize: 12,
-    color: '#718096',
     marginBottom: 5,
   },
-  cardFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  productShop: {
+    fontSize: 16,
+    color: '#718096', // Gris clair
+    marginBottom: 10,
   },
-  cardPrice: {
-    fontSize: 14,
-    color: '#DD6B20', // Orange pour le prix
-    fontWeight: '500',
+  productPrice: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#DD6B20', // Orange
+    marginBottom: 15,
+  },
+  productDescription: {
+    fontSize: 16,
+    color: '#2D3748',
+    lineHeight: 24,
+    marginBottom: 20,
   },
   addToCartButton: {
+    flexDirection: 'row',
     backgroundColor: '#38A169', // Vert
-    borderRadius: 15,
-    width: 30,
-    height: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderRadius: 25,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
   },
-  // Bottom Navigation Styles
+  addToCartText: {
+    color: '#fff',
+    fontSize: 16,
+    marginRight: 10,
+  },
+  cartIcon: {
+    marginLeft: 10,
+  },
   bottomNav: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    backgroundColor: '#fff',
+    alignItems: 'center',
     paddingVertical: 10,
+    backgroundColor: '#fff',
     borderTopWidth: 1,
     borderTopColor: '#E2E8F0',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 5,
   },
   navItem: {
+    justifyContent: 'center',
     alignItems: 'center',
   },
   navText: {
     fontSize: 12,
-    color: '#38A169', // Vert
-    marginTop: 2,
+    color: '#38A169',
   },
 });
 
-export default HomeScreen;
+export default ProductScreen;
