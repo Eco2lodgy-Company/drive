@@ -57,7 +57,7 @@ const ProductScreen = () => {
         colors={['#4C68D7', '#8E54E9']}
         style={styles.appBar}
       >
-        <Text style={styles.appName}>Shop by Noor</Text>
+        <Text style={styles.appName}>Drive.re</Text>
         <TouchableOpacity>
           <Icon name="heart" size={24} color="#fff" />
         </TouchableOpacity>

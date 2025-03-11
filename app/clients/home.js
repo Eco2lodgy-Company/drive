@@ -89,7 +89,7 @@ const HomeScreen = () => {
     <SafeAreaView style={styles.container}>
       {/* App Bar with "Shop by Noor" */}
       <View style={styles.appBar}>
-        <Text style={styles.appName}>Shop by Noor</Text>
+        <Text style={styles.appName}>Drive.re</Text>
         <TouchableOpacity style={styles.notificationButton}>
           <Icon name="bell" size={24} color="#DD6B20" />
         </TouchableOpacity>
@@ -229,6 +229,7 @@ const styles = StyleSheet.create({
   listContent: {
     paddingHorizontal: 15,
     paddingBottom: 80,
+ 
   },
   row: {
     justifyContent: 'space-between',
