@@ -7,15 +7,16 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
+  Animated,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import { useRoute } from '@react-navigation/native';
 import { useLocalSearchParams } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 
+const ProductScreen = () => {
+  const { productId } = useLocalSearchParams();
+  const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
-const ProductScreen = ({  }) => {
-  const { productId } = useLocalSearchParams(); 
-  console.log('Product ID:', productId); 
   const products = [
     { id: '1', name: 'T-Shirt Black', price: 29.99, shop: 'Noor Boutique', image: 'https://images.unsplash.com/photo-1519996529931-28324d5a630e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
     { id: '2', name: 'Jeans Blue', price: 59.99, shop: 'Fashion Hub', image: 'https://plus.unsplash.com/premium_photo-1667049290968-d0e2b9c36e01?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
@@ -35,60 +36,90 @@ const ProductScreen = ({  }) => {
 
   ];
 
-  // Récupération du produit basé sur l'ID
   const product = products.find(item => item.id === productId);
+
+  React.useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
 
   const handleAddToCart = () => {
     console.log(`Added ${product.name} to cart`);
-    // Ajoutez ici votre logique pour ajouter au panier
   };
 
   return (
     <SafeAreaView style={styles.container}>
       {/* App Bar */}
-      <View style={styles.appBar}>
+      <LinearGradient
+        colors={['#4C68D7', '#8E54E9']}
+        style={styles.appBar}
+      >
         <Text style={styles.appName}>Shop by Noor</Text>
-      </View>
+        <TouchableOpacity>
+          <Icon name="heart" size={24} color="#fff" />
+        </TouchableOpacity>
+      </LinearGradient>
 
-      {/* Contenu défilant */}
+      {/* Contenu principal */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Image du produit */}
-        <Image source={{ uri: product.image }} style={styles.productImage} />
+        {/* Image avec ombre */}
+        <View style={styles.imageContainer}>
+          <Image source={{ uri: product.image }} style={styles.productImage} />
+        </View>
 
         {/* Détails du produit */}
-        <View style={styles.detailsContainer}>
+        <Animated.View style={[styles.detailsContainer, { opacity: fadeAnim }]}>
           <Text style={styles.productName}>{product.name}</Text>
-          <Text style={styles.productShop}>{product.shop}</Text>
+          <View style={styles.shopRatingContainer}>
+            <Text style={styles.productShop}>{product.shop}</Text>
+            <View style={styles.ratingBadge}>
+              <Icon name="star" size={14} color="#FFD700" />
+              <Text style={styles.ratingText}>4.8</Text>
+            </View>
+          </View>
+          
           <Text style={styles.productPrice}>${product.price.toFixed(2)}</Text>
-          {/* Description à ajouter si nécessaire */}
-          <Text style={styles.productDescription}>Description</Text>
+          
+          <View style={styles.descriptionCard}>
+            <Text style={styles.productDescription}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+              Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </Text>
+          </View>
 
-          {/* Bouton Ajouter au panier */}
-          <TouchableOpacity style={styles.addToCartButton} onPress={handleAddToCart}>
-            <Text style={styles.addToCartText}>Add to Cart</Text>
-            <Icon name="shopping-cart" size={20} color="#fff" style={styles.cartIcon} />
+          {/* Bouton avec effet hover */}
+          <TouchableOpacity 
+            style={styles.addToCartButton}
+            activeOpacity={0.8}
+            onPress={handleAddToCart}
+          >
+            <LinearGradient
+              colors={['#FF6B6B', '#FF8E53']}
+              style={styles.buttonGradient}
+            >
+              <Text style={styles.addToCartText}>Add to Cart</Text>
+              <Icon name="shopping-cart" size={20} color="#fff" />
+            </LinearGradient>
           </TouchableOpacity>
-        </View>
+        </Animated.View>
       </ScrollView>
 
-      {/* Bottom Navigation */}
+      {/* Bottom Navigation améliorée */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Home')}>
-          <Icon name="home" size={24} color="#38A169" />
-          <Text style={styles.navText}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="search" size={24} color="#38A169" />
-          <Text style={styles.navText}>Search</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Cart')}>
-          <Icon name="shopping-cart" size={24} color="#38A169" />
-          <Text style={styles.navText}>Cart</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="user" size={24} color="#38A169" />
-          <Text style={styles.navText}>Profile</Text>
-        </TouchableOpacity>
+        {[
+          { icon: 'home', label: 'Home' },
+          { icon: 'search', label: 'Search' },
+          { icon: 'shopping-cart', label: 'Cart' },
+          { icon: 'user', label: 'Profile' },
+        ].map((item, index) => (
+          <TouchableOpacity key={index} style={styles.navItem}>
+            <Icon name={item.icon} size={24} color="#4C68D7" />
+            <Text style={styles.navText}>{item.label}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
     </SafeAreaView>
   );
@@ -97,70 +128,107 @@ const ProductScreen = ({  }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7FAFC', // Blanc cassé
+    backgroundColor: '#F0F4F8',
   },
   appBar: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     alignItems: 'center',
     padding: 15,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    paddingTop: 40,
+    elevation: 4,
   },
   appName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2D3748', // Gris sombre
+    fontSize: 26,
+    fontWeight: '700',
+    color: '#fff',
+    fontFamily: 'sans-serif-medium',
   },
   scrollContent: {
-    paddingBottom: 80, // Espace pour la barre de navigation
+    paddingBottom: 100,
+  },
+  imageContainer: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5,
   },
   productImage: {
     width: '100%',
-    height: 300,
-    resizeMode: 'cover',
+    height: 350,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   detailsContainer: {
-    padding: 15,
+    padding: 20,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    marginTop: -20,
   },
   productName: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#2D3748',
-    marginBottom: 5,
+    color: '#2D3436',
+    marginBottom: 8,
+  },
+  shopRatingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
   },
   productShop: {
     fontSize: 16,
-    color: '#718096', // Gris clair
-    marginBottom: 10,
+    color: '#636E72',
+    marginRight: 10,
+  },
+  ratingBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF3E0',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  ratingText: {
+    marginLeft: 4,
+    color: '#DD6B20',
+    fontWeight: '600',
   },
   productPrice: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#DD6B20', // Orange
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#FF6B6B',
     marginBottom: 15,
   },
-  productDescription: {
-    fontSize: 16,
-    color: '#2D3748',
-    lineHeight: 24,
+  descriptionCard: {
+    backgroundColor: '#F8F9FA',
+    padding: 15,
+    borderRadius: 15,
     marginBottom: 20,
   },
+  productDescription: {
+    fontSize: 15,
+    color: '#2D3436',
+    lineHeight: 22,
+  },
   addToCartButton: {
+    borderRadius: 30,
+    overflow: 'hidden',
+  },
+  buttonGradient: {
     flexDirection: 'row',
-    backgroundColor: '#38A169', // Vert
-    borderRadius: 25,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 15,
+    paddingHorizontal: 25,
   },
   addToCartText: {
     color: '#fff',
     fontSize: 16,
+    fontWeight: '600',
     marginRight: 10,
-  },
-  cartIcon: {
-    marginLeft: 10,
   },
   bottomNav: {
     flexDirection: 'row',
@@ -170,14 +238,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopWidth: 1,
     borderTopColor: '#E2E8F0',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    elevation: 5,
   },
   navItem: {
-    justifyContent: 'center',
     alignItems: 'center',
+    padding: 5,
   },
   navText: {
     fontSize: 12,
-    color: '#38A169',
+    color: '#4C68D7',
+    marginTop: 4,
   },
 });
 

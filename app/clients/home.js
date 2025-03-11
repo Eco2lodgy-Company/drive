@@ -131,23 +131,26 @@ const HomeScreen = () => {
 
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="home" size={24} color="#38A169" />
-          <Text style={styles.navText}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="search" size={24} color="#38A169" />
-          <Text style={styles.navText}>Search</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="shopping-cart" size={24} color="#38A169" />
-          <Text style={styles.navText}>Cart</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="user" size={24} color="#38A169" />
-          <Text style={styles.navText}>Profile</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/home')}>
+        <Icon name="home" size={24} color="#38A169" />
+        <Text style={styles.navText}>Home</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/search')}>
+        <Icon name="search" size={24} color="#38A169" />
+        <Text style={styles.navText}>Search</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/cart')}>
+        <Icon name="shopping-cart" size={24} color="#38A169" />
+        <Text style={styles.navText}>Cart</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/profile')}>
+        <Icon name="user" size={24} color="#38A169" />
+        <Text style={styles.navText}>Profile</Text>
+      </TouchableOpacity>
+    </View>
     </SafeAreaView>
   );
 };
