@@ -95,7 +95,7 @@ const DeliveryScreen = () => {
   const handleConfirm = () => {
     if (selectedOption) {
       console.log('Lieu de livraison confirmé:', selectedOption);
-      router.push('/clients/payment');
+      router.push('clients/PaymentScreen');
     } else {
       console.log('Aucun lieu de livraison sélectionné');
     }
