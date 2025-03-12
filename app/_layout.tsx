@@ -37,7 +37,9 @@ export default function RootLayout() {
         <Stack.Screen name="clients/productScreen" options={{ presentation: 'modal',headerShown: false }}  />
         <Stack.Screen name="clients/cart" options={{ presentation: 'modal' }} />
         <Stack.Screen name="client/profile" options={{presentation: 'modal', headerShown: false }} />
- 
+        <Stack.Screen name="shops" options={{ headerShown: false }} />
+        <Stack.Screen name="notifications" options={{ headerShown: false }} />
+        <Stack.Screen name="shopProfile" options={{ headerShown: false }} />
 
 
 

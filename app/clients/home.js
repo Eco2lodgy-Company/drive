@@ -90,7 +90,7 @@ const HomeScreen = () => {
       {/* App Bar with "Shop by Noor" */}
       <View style={styles.appBar}>
         <Text style={styles.appName}>Drive.re</Text>
-        <TouchableOpacity style={styles.notificationButton}>
+        <TouchableOpacity style={styles.notificationButton} onPress={() => router.push('/clients/notifications')}>
           <Icon name="bell" size={24} color="#DD6B20" />
         </TouchableOpacity>
       </View>
@@ -136,7 +136,7 @@ const HomeScreen = () => {
         <Text style={styles.navText}>Home</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/search')}>
+      <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/shops')}>
         <Icon name="search" size={24} color="#38A169" />
         <Text style={styles.navText}>Search</Text>
       </TouchableOpacity>

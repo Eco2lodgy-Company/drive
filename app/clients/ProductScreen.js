@@ -52,7 +52,7 @@ const ProductScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* App Bar */}
+      {/* App Bar
       <LinearGradient
         colors={['#4C68D7', '#8E54E9']}
         style={styles.appBar}
@@ -61,7 +61,7 @@ const ProductScreen = () => {
         <TouchableOpacity>
           <Icon name="heart" size={24} color="#fff" />
         </TouchableOpacity>
-      </LinearGradient>
+      </LinearGradient> */}
 
       {/* Contenu principal */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
