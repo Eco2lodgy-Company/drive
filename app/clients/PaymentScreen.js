@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   TextInput,
+  Modal,
   useWindowDimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
@@ -17,7 +18,7 @@ const PaymentScreen = () => {
   const router = useRouter();
   const { width, height } = useWindowDimensions();
 
-  // Données fictives du panier (augmentées pour plus de contenu)
+  // Données fictives du panier
   const cartItems = [
     { id: '1', name: 'T-Shirt Black', price: 29.99, quantity: 1 },
     { id: '2', name: 'Jeans Blue', price: 59.99, quantity: 2 },
@@ -30,21 +31,29 @@ const PaymentScreen = () => {
   const shipping = 5.99;
   const total = subtotal + shipping;
 
-  // État pour les champs de paiement et la méthode sélectionnée
+  // État pour les champs de paiement, la méthode et le popup
   const [cardNumber, setCardNumber] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCvv] = useState('');
   const [cardHolder, setCardHolder] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('visa');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // Vérification si tous les champs sont remplis
   const isFormValid = cardNumber.length === 16 && expiryDate.length === 5 && cvv.length === 3 && cardHolder.length > 0;
 
   const handlePayment = () => {
     if (isFormValid) {
-      console.log('Processing payment:', { paymentMethod, cardNumber, expiryDate, cvv, cardHolder, total });
-      router.push('/clients/order-confirmation');
+      console.log('Payment processed:', { paymentMethod, cardNumber, expiryDate, cvv, cardHolder, total });
+      setShowSuccessModal(true); // Afficher le popup
+    } else {
+      console.log('Formulaire invalide');
     }
+  };
+
+  const closeModalAndRedirect = () => {
+    setShowSuccessModal(false);
+    router.push('/clients/order-confirmation');
   };
 
   const renderCartItem = (item) => (
@@ -60,7 +69,7 @@ const PaymentScreen = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView
         contentContainerStyle={[styles.scrollContent, { padding: width * 0.04 }]}
-        showsVerticalScrollIndicator={true} // Indicateur de défilement visible
+        showsVerticalScrollIndicator={true}
       >
         <TouchableOpacity 
           style={styles.backButton}
@@ -170,7 +179,7 @@ const PaymentScreen = () => {
           />
         </View>
 
-        {/* Informations supplémentaires pour augmenter la hauteur */}
+        {/* Note */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Note</Text>
           <Text style={styles.noteText}>
@@ -199,9 +208,32 @@ const PaymentScreen = () => {
           </LinearGradient>
         </TouchableOpacity>
 
-        {/* Espace supplémentaire pour garantir le défilement */}
         <View style={styles.spacer} />
       </ScrollView>
+
+      {/* Popup de succès */}
+      <Modal
+        visible={showSuccessModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={closeModalAndRedirect}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Icon name="check-circle" size={50} color="#2ecc71" style={styles.successIcon} />
+            <Text style={styles.modalTitle}>Paiement réussi !</Text>
+            <Text style={styles.modalMessage}>
+              Votre commande de ${total.toFixed(2)} a été confirmée avec succès.
+            </Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={closeModalAndRedirect}
+            >
+              <Text style={styles.modalButtonText}>Continuer</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
@@ -231,7 +263,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   scrollContent: {
-    paddingBottom: 150, // Augmenté pour garantir l'espace sous la navigation
+    paddingBottom: 150,
   },
   backButton: {
     padding: 10,
@@ -345,7 +377,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     overflow: 'hidden',
     elevation: 3,
-    marginBottom: 20, // Espace supplémentaire sous le bouton
+    marginBottom: 20,
   },
   payButtonDisabled: {
     opacity: 0.7,
@@ -366,7 +398,48 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   spacer: {
-    height: 50, // Espace supplémentaire pour garantir le défilement
+    height: 50,
+  },
+  // Styles du popup
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    padding: 20,
+    width: '80%',
+    alignItems: 'center',
+    elevation: 5,
+  },
+  successIcon: {
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 10,
+  },
+  modalMessage: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  modalButton: {
+    backgroundColor: '#2ecc71',
+    borderRadius: 25,
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+  },
+  modalButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   bottomNav: {
     position: 'absolute',
