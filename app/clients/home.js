@@ -1,102 +1,108 @@
-// HomeScreen.js
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
-  Dimensions,
-  TextInput,
+import React, { useState } from 'react';
+import { 
+  View, 
+  Text, 
+  Image, 
+  StyleSheet, 
+  ScrollView, 
+  FlatList, 
+  TouchableOpacity, 
+  SafeAreaView, 
+  TextInput, 
+  useWindowDimensions 
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useRouter } from 'expo-router';
+
+// Données d'exemple
+const initialProducts = [
+  { id: '1', name: 'T-Shirt Black', price: 29.99, shop: 'Noor Boutique', category: 'Clothing', image: 'https://images.unsplash.com/photo-1519996529931-28324d5a630e?q=80&w=1887&auto=format&fit=crop' },
+  { id: '2', name: 'Jeans Blue', price: 59.99, shop: 'Fashion Hub', category: 'Clothing', image: 'https://plus.unsplash.com/premium_photo-1667049290968-d0e2b9c36e01?q=80&w=1974&auto=format&fit=crop' },
+  { id: '3', name: 'Sneakers White', price: 89.99, shop: 'Trendy Wear', category: 'Shoes', image: 'https://images.unsplash.com/photo-1598030304671-5aa1d6f21128?q=80&w=1974&auto=format&fit=crop' },
+  { id: '4', name: 'Jacket Leather', price: 129.99, shop: 'Noor Boutique', category: 'Clothing', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1965&auto=format&fit=crop' },
+  { id: '5', name: 'Cap Gray', price: 19.99, shop: 'Street Style', category: 'Accessories', image: 'https://images.unsplash.com/photo-1606115757624-6b9bfe9fa5e4?q=80&w=500&auto=format&fit=crop' },
+  { id: '6', name: 'Hoodie Red', price: 49.99, shop: 'Fashion Hub', category: 'Clothing', image: 'https://images.unsplash.com/photo-1618453292459-53424b66bb6a?q=80&w=1964&auto=format&fit=crop' },
+  { id: '7', name: 'Necklace Gold', price: 39.99, shop: 'Trendy Wear', category: 'Jewelry', image: 'https://images.unsplash.com/photo-1606760227091-3dd44d7f7f91?q=80&w=1887&auto=format&fit=crop' },
+];
+
+const categories = ["All", "Clothing", "Shoes", "Accessories", "Jewelry", "Bags"];
+
 const HomeScreen = () => {
-  const [numColumns, setNumColumns] = useState(2);
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const router = useRouter();
-  const products = [
-    { id: '1', name: 'T-Shirt Black', price: 29.99, shop: 'Noor Boutique', image: 'https://images.unsplash.com/photo-1519996529931-28324d5a630e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-    { id: '2', name: 'Jeans Blue', price: 59.99, shop: 'Fashion Hub', image: 'https://plus.unsplash.com/premium_photo-1667049290968-d0e2b9c36e01?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-    { id: '3', name: 'Sneakers White', price: 89.99, shop: 'Trendy Wear', image: 'https://images.unsplash.com/photo-1598030304671-5aa1d6f21128?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-    { id: '4', name: 'Jacket Leather', price: 129.99, shop: 'Noor Boutique', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-    { id: '5', name: 'Cap Gray', price: 19.99, shop: 'Street Style', image: 'https://images.unsplash.com/photo-1606115757624-6b9bfe9fa5e4?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGJsYWNrJTIwdCUyMHNoaXJ0fGVufDB8fDB8fHww' },
-    { id: '6', name: 'Hoodie Red', price: 49.99, shop: 'Fashion Hub', image: 'https://images.unsplash.com/photo-1618453292459-53424b66bb6a?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-    { id: '7', name: 'T-Shirt Black', price: 29.99, shop: 'Noor Boutique', image: 'https://images.unsplash.com/photo-1519996529931-28324d5a630e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-    { id: '8', name: 'Jeans Blue', price: 59.99, shop: 'Fashion Hub', image: 'https://plus.unsplash.com/premium_photo-1667049290968-d0e2b9c36e01?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-    { id: '9', name: 'Sneakers White', price: 89.99, shop: 'Trendy Wear', image: 'https://images.unsplash.com/photo-1598030304671-5aa1d6f21128?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-    { id: '10', name: 'Jacket Leather', price: 129.99, shop: 'Noor Boutique', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-    { id: '11', name: 'T-Shirt Black', price: 29.99, shop: 'Noor Boutique', image: 'https://images.unsplash.com/photo-1519996529931-28324d5a630e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-    { id: '12', name: 'Jeans Blue', price: 59.99, shop: 'Fashion Hub', image: 'https://plus.unsplash.com/premium_photo-1667049290968-d0e2b9c36e01?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-    { id: '13', name: 'Sneakers White', price: 89.99, shop: 'Trendy Wear', image: 'https://images.unsplash.com/photo-1598030304671-5aa1d6f21128?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-    { id: '14', name: 'Jacket Leather', price: 129.99, shop: 'Noor Boutique', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-    { id: '15', name: 'Jacket Leather', price: 129.99, shop: 'Noor Boutique', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+  const { width, height } = useWindowDimensions();
 
-  ];
+  // Calcul grille responsive
+  const numColumns = Math.max(2, Math.floor(width / 180));
+  const cardWidth = width / numColumns - 20;
 
-  const categories = [
-    { id: '1', name: 'Clothing' },
-    { id: '2', name: 'Shoes' },
-    { id: '3', name: 'Accessories' },
-    { id: '4', name: 'Bags' },
-    { id: '5', name: 'Jewelry' },
-  ];
+  // Filtrer les produits
+  const filteredProducts = selectedCategory === "All" 
+    ? initialProducts 
+    : initialProducts.filter(product => product.category === selectedCategory);
 
-  useEffect(() => {
-    const updateLayout = () => {
-      const screenWidth = Dimensions.get('window').width;
-      setNumColumns(screenWidth > 768 ? 5 : 2);
-    };
-    updateLayout();
-    const subscription = Dimensions.addEventListener('change', updateLayout);
-    return () => subscription?.remove();
-  }, []);
-
-  const handleAddToCart = (product) => {
-    console.log(`Added ${product.name} to cart`);
-  };
-
-  const renderProductCard = ({ item }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() => router.push('/clients/ProductScreen?productId=' + item.id)}
-
+  // Rendu des produits
+  const renderProduct = ({ item }) => (
+    <TouchableOpacity 
+      style={[styles.productCard, { width: cardWidth }]}
+      onPress={() => router.push(`/clients/ProductScreen?productId=${item.id}`)}
     >
-      <Image source={{ uri: item.image }} style={styles.cardImage} />
-      <View style={styles.cardContent}>
-        <Text style={styles.cardName}>{item.name}</Text>
-        <Text style={styles.cardShop}>{item.shop}</Text>
-        <View style={styles.cardFooter}>
-          <Text style={styles.cardPrice}>${item.price.toFixed(2)}</Text>
-          <TouchableOpacity style={styles.addToCartButton} onPress={() => handleAddToCart(item)}>
-            <Icon name="plus" size={16} color="#fff" />
-          </TouchableOpacity>
-        </View>
+      <Image 
+        source={{ uri: item.image }} 
+        style={[styles.productImage, { height: cardWidth * 0.8 }]} 
+        resizeMode="cover"
+      />
+      <Text style={styles.productName} numberOfLines={1}>{item.name}</Text>
+      <Text style={styles.productShop}>{item.shop}</Text>
+      <View style={styles.productFooter}>
+        <Text style={styles.productPrice}>${item.price.toFixed(2)}</Text>
+        <TouchableOpacity 
+          style={styles.addToCartButton}
+          onPress={() => console.log(`Added ${item.name} to cart`)}
+        >
+          <Icon name="plus" size={16} color="#fff" />
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
-  
 
-  const renderCategoryCard = ({ item }) => (
-    <TouchableOpacity style={styles.categoryCard}>
-      <Text style={styles.categoryText}>{item.name}</Text>
+  // Rendu des catégories
+  const renderCategory = (category) => (
+    <TouchableOpacity
+      style={[
+        styles.categoryButton,
+        selectedCategory === category && styles.categoryButtonActive,
+        { paddingHorizontal: width > 600 ? 20 : 15 }
+      ]}
+      onPress={() => setSelectedCategory(category)}
+    >
+      <Text 
+        style={[
+          styles.categoryText,
+          selectedCategory === category && styles.categoryTextActive,
+          { fontSize: width > 600 ? 16 : 14 }
+        ]}
+      >
+        {category}
+      </Text>
     </TouchableOpacity>
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* App Bar with "Shop by Noor" */}
+      {/* App Bar */}
       <View style={styles.appBar}>
-        <Text style={styles.appName}>Drive.re</Text>
-        <TouchableOpacity style={styles.notificationButton} onPress={() => router.push('/clients/notifications')}>
-          <Icon name="bell" size={24} color="#DD6B20" />
+        <Text style={[styles.appName, { fontSize: width > 600 ? 28 : 24 }]}>Drive.re</Text>
+        <TouchableOpacity 
+          style={styles.notificationButton} 
+          onPress={() => router.push('/clients/notifications')}
+        >
+          <Icon name="bell" size={width > 600 ? 28 : 24} color="#DD6B20" />
         </TouchableOpacity>
       </View>
 
       {/* Search Bar */}
-      <View style={styles.searchContainer}>
+      <View style={[styles.searchContainer, { marginHorizontal: width * 0.04 }]}>
         <Icon name="search" size={20} color="#38A169" style={styles.searchIcon} />
         <TextInput
           style={styles.searchInput}
@@ -105,52 +111,47 @@ const HomeScreen = () => {
         />
       </View>
 
-      {/* Categories Carousel */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.categoryContainer}
-        contentContainerStyle={styles.categoryContent}
-      >
-        {categories.map((category) => (
-          <View key={category.id}>{renderCategoryCard({ item: category })}</View>
-        ))}
-      </ScrollView>
+      {/* Catégories */}
+      <View style={[styles.categoriesContainer, { paddingHorizontal: width * 0.04 }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {categories.map(category => (
+            <View key={category}>{renderCategory(category)}</View>
+          ))}
+        </ScrollView>
+      </View>
 
-      {/* Products Grid */}
+      {/* Catalogue */}
       <FlatList
-        data={products}
-        renderItem={renderProductCard}
-        keyExtractor={(item) => item.id}
+        data={filteredProducts}
+        renderItem={renderProduct}
+        keyExtractor={item => item.id}
         numColumns={numColumns}
         key={numColumns}
-        columnWrapperStyle={styles.row}
+        columnWrapperStyle={styles.productRow}
+        contentContainerStyle={[styles.listContent, { paddingHorizontal: width * 0.04 }]}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
+        ListEmptyComponent={<Text style={styles.emptyText}>No products in this category</Text>}
       />
 
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-      <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/home')}>
-        <Icon name="home" size={24} color="#38A169" />
-        <Text style={styles.navText}>Home</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/shops')}>
-        <Icon name="search" size={24} color="#38A169" />
-        <Text style={styles.navText}>Search</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/cart')}>
-        <Icon name="shopping-cart" size={24} color="#38A169" />
-        <Text style={styles.navText}>Cart</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/profile')}>
-        <Icon name="user" size={24} color="#38A169" />
-        <Text style={styles.navText}>Profile</Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/home')}>
+          <Icon name="home" size={24} color="#38A169" />
+          <Text style={styles.navText}>Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/shops')}>
+          <Icon name="search" size={24} color="#38A169" />
+          <Text style={styles.navText}>Search</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/cart')}>
+          <Icon name="shopping-cart" size={24} color="#38A169" />
+          <Text style={styles.navText}>Cart</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/profile')}>
+          <Icon name="user" size={24} color="#38A169" />
+          <Text style={styles.navText}>Profile</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
@@ -158,9 +159,9 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7FAFC', // Blanc cassé
+    backgroundColor: '#fff',
   },
-  // App Bar Styles
+  // App Bar
   appBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -171,26 +172,20 @@ const styles = StyleSheet.create({
     borderBottomColor: '#E2E8F0',
   },
   appName: {
-    fontSize: 24,
     fontWeight: 'bold',
-    color: '#2D3748', // Gris sombre pour contraste
+    color: '#333',
   },
   notificationButton: {
     padding: 10,
   },
-  // Search Bar Styles
+  // Search Bar
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#f9f9f9',
     borderRadius: 25,
-    marginHorizontal: 15,
     marginVertical: 10,
     paddingHorizontal: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
     elevation: 2,
   },
   searchIcon: {
@@ -199,93 +194,85 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: '#2D3748',
+    color: '#333',
     paddingVertical: 8,
   },
-  // Category Carousel Styles
-  categoryContainer: {
-    paddingVertical: 10,
-  },
-  categoryContent: {
-    paddingHorizontal: 15,
-  },
-  categoryCard: {
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    paddingVertical: 15,
-    paddingHorizontal: 15,
-    marginRight: 10,
-    minWidth: 100,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#38A169', // Vert pour les bordures
-  },
-  categoryText: {
-    fontSize: 14,
-    color: '#38A169', // Vert pour le texte
-    fontWeight: '500',
-  },
-  // Product Card Styles
-  listContent: {
-    paddingHorizontal: 15,
-    paddingBottom: 80,
- 
-  },
-  row: {
-    justifyContent: 'space-between',
+  // Categories
+  categoriesContainer: {
     marginBottom: 15,
   },
-  card: {
-    width: Dimensions.get('window').width > 768 ? '18%' : '48%',
-    backgroundColor: '#fff',
+  categoryButton: {
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#f0f0f0',
+    marginRight: 10,
+  },
+  categoryButtonActive: {
+    backgroundColor: '#2ecc71',
+  },
+  categoryText: {
+    color: '#666',
+  },
+  categoryTextActive: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  // Products
+  listContent: {
+    paddingBottom: 80,
+  },
+  productRow: {
+    justifyContent: 'space-between',
+  },
+  productCard: {
+    backgroundColor: '#f9f9f9',
     borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    overflow: 'hidden',
-    margin: 2,
-  },
-  cardImage: {
-    width: '100%',
-    height: 150,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-  },
-  cardContent: {
     padding: 10,
+    marginBottom: 15,
+    alignItems: 'center',
+    elevation: 2,
   },
-  cardName: {
+  productImage: {
+    width: '100%',
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  productName: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#2D3748',
-    marginBottom: 3,
-  },
-  cardShop: {
-    fontSize: 12,
-    color: '#718096',
+    color: '#333',
     marginBottom: 5,
   },
-  cardFooter: {
+  productShop: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 5,
+  },
+  productFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    width: '100%',
   },
-  cardPrice: {
+  productPrice: {
     fontSize: 14,
-    color: '#DD6B20', // Orange pour le prix
-    fontWeight: '500',
+    fontWeight: 'bold',
+    color: '#2ecc71',
   },
   addToCartButton: {
-    backgroundColor: '#38A169', // Vert
+    backgroundColor: '#2ecc71',
     borderRadius: 15,
     width: 30,
     height: 30,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  // Bottom Navigation Styles
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  // Bottom Navigation
   bottomNav: {
     position: 'absolute',
     bottom: 0,
@@ -297,10 +284,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderTopWidth: 1,
     borderTopColor: '#E2E8F0',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
     elevation: 5,
   },
   navItem: {
@@ -308,7 +291,7 @@ const styles = StyleSheet.create({
   },
   navText: {
     fontSize: 12,
-    color: '#38A169', // Vert
+    color: '#38A169',
     marginTop: 2,
   },
 });
