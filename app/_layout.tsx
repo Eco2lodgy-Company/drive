@@ -40,10 +40,11 @@ export default function RootLayout() {
         <Stack.Screen name="shops" options={{ headerShown: false }} />
         <Stack.Screen name="notifications" options={{ headerShown: false }} />
         <Stack.Screen name="shopProfile" options={{ headerShown: false }} />
+        <Stack.Screen name="PaymentScreen" options={{ headerShown: false }} />
 
 
 
-
+        
 
       </Stack>
   );

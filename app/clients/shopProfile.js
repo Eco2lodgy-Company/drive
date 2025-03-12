@@ -12,6 +12,7 @@ import {
   useWindowDimensions, // Ajout pour des dimensions dynamiques
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 // Données d'exemple
 const shopData = {
@@ -36,7 +37,7 @@ const shopData = {
 const ShopScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState("Tous");
   const { width, height } = useWindowDimensions(); // Dimensions dynamiques
-
+  const router = useRouter();
   // Calculs pour la grille responsive
   const numColumns = Math.floor(width / 180); // Ajuste selon la taille minimale des cartes
   const cardWidth = width / numColumns - 20; // 20 pour les marges
@@ -64,7 +65,9 @@ const ShopScreen = () => {
 
   // Rendu des produits
   const renderProduct = ({ item }) => (
-    <TouchableOpacity style={[styles.productCard, { width: cardWidth }]}>
+    <TouchableOpacity style={[styles.productCard, { width: cardWidth }]}
+    onPress={() => router.push(`/clients/ProductScreen?productId=${item.id}`)}
+    >
       <Image 
         source={{ uri: item.image }} 
         style={[styles.productImage, { height: cardWidth * 0.8 }]} // Ratio image
