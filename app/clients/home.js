@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useRouter } from 'expo-router';
+import BottomNavigation from './components/BottomNavigation';
 
 // Données d'exemple
 const initialProducts = [
@@ -132,26 +133,8 @@ const HomeScreen = () => {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={<Text style={styles.emptyText}>No products in this category</Text>}
       />
-
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/home')}>
-          <Icon name="home" size={24} color="#38A169" />
-          <Text style={styles.navText}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/shops')}>
-          <Icon name="search" size={24} color="#38A169" />
-          <Text style={styles.navText}>Search</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/cart')}>
-          <Icon name="shopping-cart" size={24} color="#38A169" />
-          <Text style={styles.navText}>Cart</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/clients/profile')}>
-          <Icon name="user" size={24} color="#38A169" />
-          <Text style={styles.navText}>Profile</Text>
-        </TouchableOpacity>
-      </View>
+  <BottomNavigation></BottomNavigation>
+      
     </SafeAreaView>
   );
 };
@@ -271,28 +254,6 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
     marginTop: 20,
-  },
-  // Bottom Navigation
-  bottomNav: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
-    elevation: 5,
-  },
-  navItem: {
-    alignItems: 'center',
-  },
-  navText: {
-    fontSize: 12,
-    color: '#38A169',
-    marginTop: 2,
   },
 });
 
