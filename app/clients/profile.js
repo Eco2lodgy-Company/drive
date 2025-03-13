@@ -80,7 +80,7 @@ const ProfileScreen = () => {
         {/* Options du menu */}
         <View style={styles.menuContainer}>
           {[
-            { icon: 'user', label: 'Edit Profile', action: () => console.log('Edit my profile') },
+            { icon: 'user', label: 'Edit Profile', action: () => router.push('/clients/ProfileEditScreen') },
             { icon: 'shopping-cart', label: 'My Orders', action: () =>router.push('/clients/OrdersScreen')  },
             { icon: 'settings', label: 'Settings', action: () => console.log('Settings') },
             { icon: 'help-circle', label: 'Help & Support', action: () => console.log('Help') },

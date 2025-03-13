@@ -44,8 +44,9 @@ export default function RootLayout() {
         <Stack.Screen name="clients/DeliveryScreen" options={{ headerShown: false }} />
         <Stack.Screen name="clients/TrackOrderScreen" options={{ headerShown: false }} />
         <Stack.Screen name="clients/OrderScreen" options={{ headerShown: false }} />
+        <Stack.Screen name="clients/ProfileEditScreen" options={{ headerShown: false }} />
 
-
+        
         
 
       </Stack>
