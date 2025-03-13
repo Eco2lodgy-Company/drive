@@ -1,11 +1,12 @@
 // SellerBottomNavigation.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import { useRouter } from 'expo-router';
+import { useRouter, usePathname } from 'expo-router';
 
 const SellerBottomNavigation = () => {
   const router = useRouter();
+  const pathname = usePathname(); // Obtenir le chemin actuel
   const [activeTab, setActiveTab] = useState('dashboard'); // Onglet actif par défaut
   const [animations] = useState({
     dashboard: new Animated.Value(1),
@@ -16,11 +17,17 @@ const SellerBottomNavigation = () => {
 
   // Liste des onglets
   const tabs = [
-    { id: 'dashboard', label: 'Tableau', icon: 'home', route: '/sellers/dashboard' },
+    { id: 'dashboard', label: 'Tableau', icon: 'home', route: '/sellers/home' },
     { id: 'orders', label: 'Commandes', icon: 'package', route: '/sellers/orders' },
     { id: 'products', label: 'Produits', icon: 'shopping-bag', route: '/sellers/products' },
     { id: 'profile', label: 'Profil', icon: 'user', route: '/sellers/profile' },
   ];
+
+  // Mettre à jour l'onglet actif en fonction du chemin actuel
+  useEffect(() => {
+    const currentTab = tabs.find((tab) => pathname === tab.route)?.id || 'dashboard';
+    setActiveTab(currentTab);
+  }, [pathname]);
 
   // Animation au clic
   const handlePress = (tabId, route) => {
