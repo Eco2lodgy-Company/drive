@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useRouter } from 'expo-router';
+import BottomNavigation from './components/BottomNavigation';
 
 const ShopsScreen = () => {
   const router = useRouter();
@@ -102,24 +103,7 @@ const ShopsScreen = () => {
         {shops.map((shop, index) => renderShopCard(shop, index))}
       </ScrollView>
 
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        {[
-          { icon: 'home', label: 'Home', route: '/clients/home' },
-          { icon: 'search', label: 'Search', route: '/clients/shops' },
-          { icon: 'shopping-cart', label: 'Cart', route: '/clients/cart' },
-          { icon: 'user', label: 'Profile', route: '/clients/profile' },
-        ].map((item, index) => (
-          <TouchableOpacity 
-            key={index} 
-            style={styles.navItem}
-            onPress={() => router.push(item.route)}
-          >
-            <Icon name={item.icon} size={24} color="#2ecc71" />
-            <Text style={styles.navText}>{item.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <BottomNavigation></BottomNavigation>
     </SafeAreaView>
   );
 };
@@ -192,28 +176,7 @@ const styles = StyleSheet.create({
     color: '#333',
     marginLeft: 6,
   },
-  bottomNav: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#fff',
-    paddingVertical: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
-    elevation: 5,
-  },
-  navItem: {
-    alignItems: 'center',
-    padding: 5,
-  },
-  navText: {
-    fontSize: 12,
-    color: '#2ecc71',
-    marginTop: 4,
-  },
+ 
 });
 
 export default ShopsScreen;
