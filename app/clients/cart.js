@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { useRouter } from 'expo-router';
 
 const PanierScreen = () => {
   const [articles, setArticles] = useState([
@@ -21,7 +22,7 @@ const PanierScreen = () => {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [orderStatus, setOrderStatus] = useState(null);
-
+  const router = useRouter();
   const updateQuantity = (id, quantity) => {
     setArticles(prevArticles =>
       prevArticles.map(article =>
@@ -39,27 +40,29 @@ const PanierScreen = () => {
   };
 
   const confirmOrder = async () => {
-    setIsLoading(true);
-    try {
-      await fakeApiCall({
-        items: articles,
-        total: calculateSubtotal(),
-        date: new Date().toISOString(),
-      });
-      setOrderStatus('success');
-      setArticles([]);
-    } catch (error) {
-      setOrderStatus('error');
-      Alert.alert('Erreur', 'Échec de la confirmation de la commande');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    router.push('clients/DeliveryScreen');
+  //   setIsLoading(true);
+  //   try {
+  //     await fakeApiCall({
+  //       items: articles,
+  //       total: calculateSubtotal(),
+  //       date: new Date().toISOString(),
+  //     });
+  //     setOrderStatus('success');
+  //     setArticles([]);
+  //   } catch (error) {
+  //     setOrderStatus('error');
+  //     Alert.alert('Erreur', 'Échec de la confirmation de la commande');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
-  const fakeApiCall = (orderData) => {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve({ status: 'success', orderId: 'ORD123' }), 1500);
-    });
+  // const fakeApiCall = (orderData) => {
+  //   return new Promise((resolve) => {
+  //     setTimeout(() => resolve({ status: 'success', orderId: 'ORD123' }), 1500);
+  //   });
+
   };
 
   const renderItem = (item) => (
