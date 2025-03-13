@@ -37,13 +37,13 @@ export default function RootLayout() {
         <Stack.Screen name="clients/productScreen" options={{ presentation: 'modal',headerShown: false }}  />
         <Stack.Screen name="clients/cart" options={{ presentation: 'modal' }} />
         <Stack.Screen name="client/profile" options={{presentation: 'modal', headerShown: false }} />
-        <Stack.Screen name="shops" options={{ headerShown: false }} />
-        <Stack.Screen name="notifications" options={{ headerShown: false }} />
-        <Stack.Screen name="shopProfile" options={{ headerShown: false }} />
-        <Stack.Screen name="PaymentScreen" options={{ headerShown: false }} />
-        <Stack.Screen name="DeliveryScreen" options={{ headerShown: false }} />
-        <Stack.Screen name="TrackOrderScreen" options={{ headerShown: false }} />
-
+        <Stack.Screen name="clients/shops" options={{ headerShown: false }} />
+        <Stack.Screen name="clients/notifications" options={{ headerShown: false }} />
+        <Stack.Screen name="clients/shopProfile" options={{ headerShown: false }} />
+        <Stack.Screen name="clients/PaymentScreen" options={{ headerShown: false }} />
+        <Stack.Screen name="clients/DeliveryScreen" options={{ headerShown: false }} />
+        <Stack.Screen name="clients/TrackOrderScreen" options={{ headerShown: false }} />
+        <Stack.Screen name="clients/OrderScreen" options={{ headerShown: false }} />
 
 
         

@@ -80,8 +80,8 @@ const ProfileScreen = () => {
         {/* Options du menu */}
         <View style={styles.menuContainer}>
           {[
-            { icon: 'user', label: 'Edit Profile', action: () => console.log('Edit Profile') },
-            { icon: 'shopping-cart', label: 'My Orders', action: () => console.log('My Orders') },
+            { icon: 'user', label: 'Edit Profile', action: () => console.log('Edit my profile') },
+            { icon: 'shopping-cart', label: 'My Orders', action: () =>router.push('/clients/OrdersScreen')  },
             { icon: 'settings', label: 'Settings', action: () => console.log('Settings') },
             { icon: 'help-circle', label: 'Help & Support', action: () => console.log('Help') },
           ].map((item, index) => (
