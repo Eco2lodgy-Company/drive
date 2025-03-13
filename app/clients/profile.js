@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useRouter } from 'expo-router'; // Pour Expo Router
+import BottomNavigation from './components/BottomNavigation';
 
 const ProfileScreen = () => {
   const router = useRouter(); // Navigation avec Expo Router
@@ -107,6 +108,8 @@ const ProfileScreen = () => {
           <Icon name="log-out" size={20} color="#fff" />
         </TouchableOpacity>
       </ScrollView>
+      <BottomNavigation />
+
     </SafeAreaView>
   );
 };
