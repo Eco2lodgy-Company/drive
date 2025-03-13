@@ -10,8 +10,10 @@ import {
   TextInput,
   ActivityIndicator,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import BottomNavigation from './components/BottomNavigation';
 
 const PanierScreen = () => {
   const [articles, setArticles] = useState([
@@ -23,10 +25,12 @@ const PanierScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [orderStatus, setOrderStatus] = useState(null);
   const router = useRouter();
+
   const updateQuantity = (id, quantity) => {
+    const parsedQty = parseInt(quantity) || 1;
     setArticles(prevArticles =>
       prevArticles.map(article =>
-        article.id === id ? { ...article, quantity: Math.max(1, quantity) } : article
+        article.id === id ? { ...article, quantity: Math.max(1, parsedQty) } : article
       )
     );
   };
@@ -40,39 +44,27 @@ const PanierScreen = () => {
   };
 
   const confirmOrder = async () => {
-    router.push('clients/DeliveryScreen');
-  //   setIsLoading(true);
-  //   try {
-  //     await fakeApiCall({
-  //       items: articles,
-  //       total: calculateSubtotal(),
-  //       date: new Date().toISOString(),
-  //     });
-  //     setOrderStatus('success');
-  //     setArticles([]);
-  //   } catch (error) {
-  //     setOrderStatus('error');
-  //     Alert.alert('Erreur', 'Échec de la confirmation de la commande');
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  // const fakeApiCall = (orderData) => {
-  //   return new Promise((resolve) => {
-  //     setTimeout(() => resolve({ status: 'success', orderId: 'ORD123' }), 1500);
-  //   });
-
+    setIsLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      router.push('/clients/DeliveryScreen');
+      setOrderStatus('success');
+    } catch (error) {
+      setOrderStatus('error');
+      Alert.alert('Erreur', 'Échec de la confirmation de la commande');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const renderItem = (item) => (
     <View style={styles.item}>
-      <Image source={{ uri: item.image }} style={styles.itemImage} />
+      <Image source={{ uri: item.image }} style={styles.itemImage} resizeMode="cover" />
       <View style={styles.itemContent}>
         <Text style={styles.itemName}>{item.name}</Text>
         <Text style={styles.itemDescription}>{item.description}</Text>
         <View style={styles.itemControls}>
-          <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
+          <Text style={styles.itemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
           <View style={styles.quantityControl}>
             <TouchableOpacity
               onPress={() => updateQuantity(item.id, item.quantity - 1)}
@@ -83,8 +75,9 @@ const PanierScreen = () => {
             <TextInput
               style={styles.quantityInput}
               value={item.quantity.toString()}
-              onChangeText={(text) => updateQuantity(item.id, parseInt(text) || 1)}
+              onChangeText={(text) => updateQuantity(item.id, text)}
               keyboardType="numeric"
+              selectTextOnFocus
             />
             <TouchableOpacity
               onPress={() => updateQuantity(item.id, item.quantity + 1)}
@@ -95,11 +88,8 @@ const PanierScreen = () => {
           </View>
         </View>
       </View>
-      <TouchableOpacity
-        onPress={() => removeArticle(item.id)}
-        style={styles.removeBtn}
-      >
-        <Text style={styles.removeBtnText}>Supprimer</Text>
+      <TouchableOpacity onPress={() => removeArticle(item.id)} style={styles.removeBtn}>
+        <Text style={styles.removeBtnText}>×</Text>
       </TouchableOpacity>
     </View>
   );
@@ -109,203 +99,221 @@ const PanierScreen = () => {
   const total = subtotal + shipping;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Votre Panier</Text>
-      
-      {articles.length === 0 && !orderStatus && (
-        <Text style={styles.empty}>Votre panier est vide</Text>
-      )}
+    <SafeAreaView style={styles.safeContainer}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Votre Panier</Text>
 
-      {orderStatus === 'success' && (
-        <View style={[styles.message, styles.success]}>
-          <Text style={styles.messageText}>Commande confirmée avec succès ! Merci pour votre achat.</Text>
-        </View>
-      )}
+        {articles.length === 0 && !orderStatus && (
+          <Text style={styles.empty}>Votre panier est vide</Text>
+        )}
 
-      {orderStatus === 'error' && (
-        <View style={[styles.message, styles.error]}>
-          <Text style={styles.messageText}>Erreur lors de la confirmation. Veuillez réessayer.</Text>
-        </View>
-      )}
-
-      <ScrollView style={styles.scrollContainer}>
-        {articles.map((item) => (
-          <View key={item.id}>{renderItem(item)}</View>
-        ))}
-      </ScrollView>
-
-      {articles.length > 0 && (
-        <View style={styles.summary}>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Sous-total :</Text>
-            <Text style={styles.summaryValue}>${subtotal.toFixed(2)}</Text>
+        {orderStatus === 'success' && (
+          <View style={[styles.message, styles.success]}>
+            <Text style={styles.messageText}>Commande confirmée ! Redirection en cours...</Text>
           </View>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Frais de livraison :</Text>
-            <Text style={styles.summaryValue}>{shipping === 0 ? 'Gratuit' : `$${shipping.toFixed(2)}`}</Text>
+        )}
+
+        {orderStatus === 'error' && (
+          <View style={[styles.message, styles.error]}>
+            <Text style={styles.messageText}>Erreur. Veuillez réessayer.</Text>
           </View>
-          <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Total :</Text>
-            <Text style={styles.totalValue}>${total.toFixed(2)}</Text>
+        )}
+
+        <ScrollView 
+          style={styles.scrollContainer}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {articles.map((item) => (
+            <View key={item.id}>{renderItem(item)}</View> // Ajout de la prop key ici
+          ))}
+        </ScrollView>
+
+        {articles.length > 0 && (
+          <View style={styles.summary}>
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>Sous-total</Text>
+              <Text style={styles.summaryValue}>${subtotal.toFixed(2)}</Text>
+            </View>
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>Livraison</Text>
+              <Text style={styles.summaryValue}>{shipping === 0 ? 'Gratuit' : `$${shipping.toFixed(2)}`}</Text>
+            </View>
+            <View style={styles.totalRow}>
+              <Text style={styles.totalLabel}>Total</Text>
+              <Text style={styles.totalValue}>${total.toFixed(2)}</Text>
+            </View>
+            <TouchableOpacity
+              onPress={confirmOrder}
+              disabled={isLoading}
+              style={[styles.confirmBtn, isLoading && styles.confirmBtnDisabled]}
+            >
+              {isLoading ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text style={styles.confirmBtnText}>Confirmer</Text>
+              )}
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            onPress={confirmOrder}
-            disabled={isLoading}
-            style={[styles.confirmBtn, isLoading && styles.confirmBtnDisabled]}
-          >
-            {isLoading ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Text style={styles.confirmBtnText}>Confirmer la Commande</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
+        )}
+      </View>
+      <BottomNavigation />
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeContainer: {
+    flex: 1,
+    backgroundColor: '#F7F8FA',
+  },
   container: {
     flex: 1,
-    padding: 15,
-    backgroundColor: '#ecf0f1',
+    padding: 16,
   },
   title: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: '700',
-    color: '#2c3e50',
+    color: '#1A1A1A',
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: 'left',
   },
   scrollContainer: {
-    flexGrow: 0,
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 100,
   },
   item: {
     flexDirection: 'row',
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 15,
-    marginBottom: 15,
+    padding: 12,
+    marginBottom: 12,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
   },
   itemImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 10,
-    marginRight: 15,
+    width: 70,
+    height: 70,
+    borderRadius: 8,
+    marginRight: 12,
   },
   itemContent: {
     flex: 1,
   },
   itemName: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
-    color: '#2c3e50',
-    marginBottom: 5,
+    color: '#1A1A1A',
+    marginBottom: 4,
   },
   itemDescription: {
-    fontSize: 14,
-    color: '#7f8c8d',
-    marginBottom: 10,
+    fontSize: 13,
+    color: '#666',
+    marginBottom: 8,
   },
   itemControls: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 15,
+    justifyContent: 'space-between',
   },
   itemPrice: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#e74c3c',
+    fontWeight: '600',
+    color: '#38A169',
   },
   quantityControl: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#F1F3F5',
     borderRadius: 20,
-    padding: 5,
+    overflow: 'hidden',
   },
   quantityBtn: {
     paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   quantityBtnText: {
-    fontSize: 20,
-    color: '#3498db',
+    fontSize: 18,
+    color: '#38A169',
     fontWeight: 'bold',
   },
   quantityInput: {
-    borderWidth: 0,
-    padding: 6,
-    width: 50,
+    width: 40,
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: 14,
+    color: '#1A1A1A',
+    paddingVertical: 4,
+    backgroundColor: '#fff',
   },
   removeBtn: {
-    backgroundColor: '#e74c3c',
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    padding: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   removeBtnText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 20,
+    color: '#E74C3C',
+    fontWeight: 'bold',
   },
   summary: {
-    padding: 20,
     backgroundColor: '#fff',
     borderRadius: 12,
+    padding: 16,
+    marginTop: 16,
+    marginBottom: 85,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
   },
   summaryRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 15,
+    marginBottom: 12,
   },
   summaryLabel: {
-    fontSize: 16,
-    color: '#7f8c8d',
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
   },
   summaryValue: {
-    fontSize: 16,
+    fontSize: 14,
+    color: '#1A1A1A',
     fontWeight: '500',
   },
   totalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingTop: 15,
+    paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#eee',
+    borderTopColor: '#EDEFF2',
   },
   totalLabel: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#2c3e50',
+    fontWeight: '700',
+    color: '#1A1A1A',
   },
   totalValue: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#2c3e50',
+    fontWeight: '700',
+    color: '#38A169',
   },
   confirmBtn: {
-    backgroundColor: '#3498db',
+    backgroundColor: '#38A169',
     borderRadius: 10,
-    padding: 15,
+    padding: 14,
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 16,
   },
   confirmBtnDisabled: {
-    opacity: 0.7,
+    backgroundColor: '#95C9A6',
   },
   confirmBtnText: {
     color: '#fff',
@@ -313,26 +321,27 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   message: {
-    padding: 15,
-    borderRadius: 12,
-    marginBottom: 15,
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
     alignItems: 'center',
   },
   success: {
-    backgroundColor: '#2ecc71',
+    backgroundColor: '#38A169',
   },
   error: {
-    backgroundColor: '#e74c3c',
+    backgroundColor: '#E74C3C',
   },
   messageText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 14,
+    fontWeight: '500',
   },
   empty: {
     textAlign: 'center',
-    color: '#7f8c8d',
-    fontSize: 18,
-    marginTop: 20,
+    color: '#666',
+    fontSize: 16,
+    marginTop: 40,
   },
 });
 
