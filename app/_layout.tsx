@@ -26,6 +26,8 @@ export default function RootLayout() {
 
   return (
       <Stack>
+
+        {/* // Importing the clients side screens */}
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="signin" options={{ presentation: 'modal' }} />
         <Stack.Screen name="signup" options={{ presentation: 'modal' }} />
@@ -46,8 +48,10 @@ export default function RootLayout() {
         <Stack.Screen name="clients/OrderScreen" options={{ headerShown: false }} />
         <Stack.Screen name="clients/ProfileEditScreen" options={{ headerShown: false }} />
 
-        
-        
+        {/* sellers side screens */}
+        <Stack.Screen name="sellers/login" options={{ headerShown: false }} />
+        <Stack.Screen name="sellers/signup" options={{ headerShown: false }} />
+
 
       </Stack>
   );
