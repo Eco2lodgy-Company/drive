@@ -35,6 +35,7 @@ const SellerDashboardScreen = () => {
   const notifications = [
     { id: '1', message: 'Nouvelle commande reçue !', time: 'Il y a 5 min' },
     { id: '2', message: 'Produit en rupture de stock.', time: 'Il y a 1h' },
+    { id: '3', message: 'Produit en rupture de stock.', time: 'Il y a 1h' },
   ];
 
   // Animation d'entrée
