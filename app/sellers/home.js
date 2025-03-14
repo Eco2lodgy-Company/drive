@@ -107,7 +107,7 @@ const SellerDashboardScreen = () => {
           <Animated.View style={[styles.actionsContainer, { opacity: fadeAnim, transform: [{ translateY: fadeAnim.interpolate({ inputRange: [0, 1], outputRange: [70, 0] }) }] }]}>
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => router.push('/sellers/add-product')}
+              onPress={() => router.push('/sellers/addProduct')}
             >
               <LinearGradient colors={['#38A169', '#2D8A5B']} style={styles.actionGradient}>
                 <Icon name="plus-circle" size={26} color="#fff" />
