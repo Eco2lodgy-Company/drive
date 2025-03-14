@@ -71,7 +71,7 @@ const EditProductScreen = () => {
     };
     console.log('Produit modifié :', updatedProduct);
     // Ici, vous pouvez ajouter la logique pour envoyer les données mises à jour au backend
-    router.push('/sellers/dashboard'); // Retour au tableau de bord après modification
+    router.push('/sellers/products'); // Retour au tableau de bord après modification
   };
 
   return (
