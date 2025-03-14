@@ -21,21 +21,21 @@ const SellerProductsScreen = () => {
   // Données d'exemple pour les produits
   const [products, setProducts] = useState([
     {
-      id: 'PROD001',
+      id: '1',
       name: 'T-shirt Vintage',
       price: 29.99,
       stock: 15,
       image: 'https://images.unsplash.com/photo-1654508590628-21c717998f6b?q=80&w=2076&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     },
     {
-      id: 'PROD002',
+      id: '2',
       name: 'Mug Personnalisé',
       price: 12.50,
       stock: 50,
       image: 'https://images.unsplash.com/photo-1727285100419-348edd55d403?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     },
     {
-      id: 'PROD003',
+      id: '3',
       name: 'Sac Éco',
       price: 19.99,
       stock: 8,
@@ -99,7 +99,7 @@ const SellerProductsScreen = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.editButton}
-        onPress={() => router.push(`/sellers/edit-product?productId=${item.id}`)}
+        onPress={() => router.push(`/sellers/editProduct?productId=${item.id}`)}
       >
         <Icon name="edit-2" size={22} color="#fff" />
       </TouchableOpacity>
