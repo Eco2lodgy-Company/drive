@@ -50,7 +50,7 @@ const SellerDashboardScreen = () => {
   const renderOrder = ({ item }) => (
     <TouchableOpacity
       style={styles.orderCard}
-      onPress={() => router.push(`/sellers/order-details?orderId=${item.id}`)}
+      onPress={() => router.push(`/sellers/ordersDetails?orderId=${item.id}`)}
     >
       <View style={styles.orderInfo}>
         <Text style={styles.orderId}>#{item.id}</Text>

@@ -42,7 +42,7 @@ const SellerOrdersScreen = () => {
   const renderOrder = ({ item }) => (
     <TouchableOpacity
       style={styles.orderCard}
-      onPress={() => router.push(`/sellers/order-details?orderId=${item.id}`)}
+      onPress={() => router.push(`/sellers/ordersDetails?orderId=${item.id}`)}
     >
       <View style={styles.orderInfo}>
         <Text style={styles.orderId}>#{item.id}</Text>
@@ -74,7 +74,7 @@ const SellerOrdersScreen = () => {
           <Text style={styles.headerTitle}>Commandes</Text>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() => router.push('/sellers/dashboard')}
+            onPress={() => router.push('/sellers/home')}
           >
             <Icon name="arrow-left" size={26} color="#fff" />
           </TouchableOpacity>
