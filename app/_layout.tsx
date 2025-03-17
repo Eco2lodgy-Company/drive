@@ -47,6 +47,8 @@ export default function RootLayout() {
         <Stack.Screen name="clients/TrackOrderScreen" options={{ headerShown: false }} />
         <Stack.Screen name="clients/OrderScreen" options={{ headerShown: false }} />
         <Stack.Screen name="clients/ProfileEditScreen" options={{ headerShown: false }} />
+        {/*ui ajouter*/}
+        <Stack.Screen name="deliverer/home" options={{ headerShown: false }} />
 
         {/* sellers side screens */}
         <Stack.Screen name="sellers/login" options={{ headerShown: false }} />

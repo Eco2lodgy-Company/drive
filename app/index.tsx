@@ -52,6 +52,21 @@ const WelcomeScreen = () => {
                     </LinearGradient>
                   </TouchableOpacity>
                 </Link>
+
+                <Link href="/deliverer/home" asChild>
+                  <TouchableOpacity style={styles.button}>
+                    <LinearGradient
+                      colors={["#00c4cc", "#0288d1"]}
+                      style={styles.buttonGradient}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                    >
+                      <MaterialIcons name="shopping-cart" size={22} color="#fff" />
+                      <Text style={styles.buttonText}>Je souhaite livrer</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </Link>
+
                 <Link href="/sellers/onboarding" asChild>
                   <TouchableOpacity style={styles.button}>
                     <LinearGradient
