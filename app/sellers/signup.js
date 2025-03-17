@@ -1,5 +1,5 @@
 // SellerSignupScreen.js
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,19 +8,22 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ActivityIndicator,
-  Alert,
-  ImageBackground,
   ScrollView,
   Animated,
-  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ImageBackground,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import Icon from 'react-native-vector-icons/Feather';
 
 const SellerSignupScreen = () => {
   const router = useRouter();
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const titleAnim = useRef(new Animated.Value(0)).current;
+  const buttonScale = useRef(new Animated.Value(1)).current;
 
-  // État pour les champs du formulaire et le chargement
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -28,9 +31,23 @@ const SellerSignupScreen = () => {
     confirmPassword: '',
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [buttonScale] = useState(new Animated.Value(1)); // Animation pour le bouton
 
-  // Gestion des changements dans les champs
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      Animated.spring(titleAnim, {
+        toValue: 1,
+        tension: 60,
+        friction: 8,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
   const handleChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -38,10 +55,9 @@ const SellerSignupScreen = () => {
     }));
   };
 
-  // Animation au clic du bouton
   const handlePressIn = () => {
     Animated.spring(buttonScale, {
-      toValue: 0.95,
+      toValue: 0.97,
       useNativeDriver: true,
     }).start();
   };
@@ -53,131 +69,140 @@ const SellerSignupScreen = () => {
     }).start();
   };
 
-  // Gestion de la soumission du formulaire
-  const handleSignup = async () => {
-    const { name, email, password, confirmPassword } = formData;
-
-    // Validation de base
-    if (!name || !email || !password || !confirmPassword) {
-      Alert.alert('Erreur', 'Veuillez remplir tous les champs.');
-      return;
-    }
-    if (password !== confirmPassword) {
-      Alert.alert('Erreur', 'Les mots de passe ne correspondent pas.');
-      return;
-    }
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      Alert.alert('Erreur', 'Veuillez entrer un email valide.');
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      // Simulation d'un appel API pour l'inscription
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      Alert.alert('Succès', 'Inscription réussie ! Vous pouvez maintenant vous connecter.');
-      router.push('/sellers/login');
-    } catch (error) {
-      Alert.alert('Erreur', error.message || 'Échec de l’inscription. Veuillez réessayer.');
-    } finally {
-      setIsLoading(false);
-    }
+  const handleStart = () => {
+    router.push('/sellers/home');
   };
 
   return (
     <SafeAreaView style={styles.safeContainer}>
       <ImageBackground
-        source={{ uri: 'https://images.unsplash.com/photo-1528952686551-542043782ab9?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }} // Image illustrative
+        source={{ uri: 'https://plus.unsplash.com/premium_photo-1686156706249-f513395fa099?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }}
         style={styles.backgroundImage}
       >
         <LinearGradient
-          colors={['rgba(0, 0, 0, 0.1)', 'rgba(0, 0, 0, 0.4)']} // Dégradé noir subtil
-          style={styles.overlay}
+          colors={['rgba(16, 185, 129, 0.7)', 'rgba(4, 120, 87, 0.8)']}
           start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-        />
-        <ScrollView 
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
+          end={{ x: 1, y: 1 }}
+          style={styles.overlayGradient}
         >
-          <View style={styles.container}>
-            {/* Logo sans cadre */}
-            <Image
-              source={{ uri: 'https://via.placeholder.com/120' }} // Remplacez par votre logo
-              style={styles.logo}
-              resizeMode="contain"
-            />
-            <Text style={styles.title}>Créer un compte vendeur</Text>
-            <Text style={styles.subtitle}>Rejoignez notre plateforme dès aujourd'hui</Text>
-
-            {/* Formulaire */}
-            <View style={styles.form}>
-              <Text style={styles.label}>Nom complet</Text>
-              <TextInput
-                style={styles.input}
-                value={formData.name}
-                onChangeText={(text) => handleChange('name', text)}
-                placeholder="Entrez votre nom"
-                placeholderTextColor="#A0A0A0"
-              />
-
-              <Text style={styles.label}>Email</Text>
-              <TextInput
-                style={styles.input}
-                value={formData.email}
-                onChangeText={(text) => handleChange('email', text)}
-                placeholder="Entrez votre email"
-                placeholderTextColor="#A0A0A0"
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-
-              <Text style={styles.label}>Mot de passe</Text>
-              <TextInput
-                style={styles.input}
-                value={formData.password}
-                onChangeText={(text) => handleChange('password', text)}
-                placeholder="Entrez votre mot de passe"
-                placeholderTextColor="#A0A0A0"
-                secureTextEntry
-              />
-
-              <Text style={styles.label}>Confirmer le mot de passe</Text>
-              <TextInput
-                style={styles.input}
-                value={formData.confirmPassword}
-                onChangeText={(text) => handleChange('confirmPassword', text)}
-                placeholder="Confirmez votre mot de passe"
-                placeholderTextColor="#A0A0A0"
-                secureTextEntry
-              />
-
-              <Animated.View style={[styles.buttonContainer, { transform: [{ scale: buttonScale }] }]}>
-                <TouchableOpacity
-                  style={[styles.signupButton, isLoading && styles.signupButtonDisabled]}
-                  onPress={handleSignup}
-                  onPressIn={handlePressIn}
-                  onPressOut={handlePressOut}
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <ActivityIndicator size="small" color="#fff" />
-                  ) : (
-                    <Text style={styles.signupButtonText}>S'inscrire</Text>
-                  )}
-                </TouchableOpacity>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.keyboardContainer}
+          >
+            <ScrollView
+              contentContainerStyle={styles.scrollContent}
+              showsVerticalScrollIndicator={false}
+            >
+              <Animated.View
+                style={[
+                  styles.header,
+                  {
+                    opacity: titleAnim,
+                    transform: [
+                      {
+                        translateY: titleAnim.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [50, 0],
+                        }),
+                      },
+                    ],
+                  },
+                ]}
+              >
+                <Text style={styles.title}>Lancez Votre Boutique</Text>
+                <Text style={styles.subtitle}>Inscrivez-vous et vendez dès maintenant</Text>
               </Animated.View>
-            </View>
 
-            {/* Lien pour se connecter */}
-            <View style={styles.loginContainer}>
-              <Text style={styles.loginText}>Déjà un compte ? </Text>
-              <TouchableOpacity onPress={() => router.push('/sellers/login')}>
-                <Text style={styles.loginLink}>Se connecter</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </ScrollView>
+              <Animated.View style={[styles.formContainer, { opacity: fadeAnim }]}>
+                <View style={styles.inputCard}>
+                  <View style={styles.inputWrapper}>
+                    <Icon name="user" size={22} color="#10B981" style={styles.inputIcon} />
+                    <TextInput
+                      style={styles.input}
+                      value={formData.name}
+                      onChangeText={(text) => handleChange('name', text)}
+                      placeholder="Votre nom"
+                      placeholderTextColor="#9CA3AF"
+                      autoCapitalize="words"
+                    />
+                  </View>
+
+                  <View style={styles.inputWrapper}>
+                    <Icon name="mail" size={22} color="#10B981" style={styles.inputIcon} />
+                    <TextInput
+                      style={styles.input}
+                      value={formData.email}
+                      onChangeText={(text) => handleChange('email', text)}
+                      placeholder="Votre email"
+                      placeholderTextColor="#9CA3AF"
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                    />
+                  </View>
+
+                  <View style={styles.inputWrapper}>
+                    <Icon name="lock" size={22} color="#10B981" style={styles.inputIcon} />
+                    <TextInput
+                      style={styles.input}
+                      value={formData.password}
+                      onChangeText={(text) => handleChange('password', text)}
+                      placeholder="Mot de passe"
+                      placeholderTextColor="#9CA3AF"
+                      secureTextEntry
+                    />
+                  </View>
+
+                  <View style={styles.inputWrapper}>
+                    <Icon name="lock" size={22} color="#10B981" style={styles.inputIcon} />
+                    <TextInput
+                      style={styles.input}
+                      value={formData.confirmPassword}
+                      onChangeText={(text) => handleChange('confirmPassword', text)}
+                      placeholder="Confirmez"
+                      placeholderTextColor="#9CA3AF"
+                      secureTextEntry
+                    />
+                  </View>
+                </View>
+
+                <Animated.View style={[styles.buttonWrapper, { transform: [{ scale: buttonScale }] }]}>
+                  <TouchableOpacity
+                    style={styles.signupButton}
+                    onPress={handleStart}
+                    onPressIn={handlePressIn}
+                    onPressOut={handlePressOut}
+                    disabled={isLoading}
+                  >
+                    <LinearGradient
+                      colors={isLoading ? ['#9CA3AF', '#6B7280'] : ['#FCD34D', '#F59E0B']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.buttonGradient}
+                    >
+                      {isLoading ? (
+                        <ActivityIndicator size="small" color="#fff" />
+                      ) : (
+                        <Text style={styles.buttonText}>C’est parti !</Text>
+                      )}
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </Animated.View>
+
+                <View style={styles.footer}>
+                  <Text style={styles.footerText}>Déjà inscrit ?</Text>
+                  <TouchableOpacity onPress={() => router.push('/sellers/home')}>
+                    <Text style={styles.footerLink}>Connexion</Text>
+                  </TouchableOpacity>
+                </View>
+              </Animated.View>
+            </ScrollView>
+          </KeyboardAvoidingView>
+
+          <LinearGradient
+            colors={['rgba(255, 255, 255, 0.15)', 'transparent']}
+            style={styles.auroraEffect}
+          />
+        </LinearGradient>
       </ImageBackground>
     </SafeAreaView>
   );
@@ -192,110 +217,120 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
+  overlayGradient: {
+    flex: 1,
+  },
+  keyboardContainer: {
+    flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
-  },
-  container: {
     padding: 20,
-    alignItems: 'center',
   },
-  logo: {
-    width: 120,
-    height: 120,
-    marginBottom: 20,
+  header: {
+    alignItems: 'center',
+    marginBottom: 40,
   },
   title: {
-    fontSize: 28,
-    fontWeight: '700',
+    fontSize: 36,
+    fontWeight: '900',
     color: '#fff',
-    marginBottom: 8,
-    textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
+    textShadowColor: 'rgba(0, 0, 0, 0.4)',
+    textShadowOffset: { width: 0, height: 4 },
+    textShadowRadius: 12,
   },
   subtitle: {
-    fontSize: 16,
-    color: '#fff',
-    marginBottom: 30,
-    textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.2)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+    fontSize: 18,
+    color: '#D1FAE5',
+    marginTop: 8,
+    fontWeight: '500',
+    opacity: 0.9,
   },
-  form: {
+  formContainer: {
     width: '100%',
     maxWidth: 400,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)', // Légère transparence
-    borderRadius: 16,
-    padding: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 8,
-  },
-  input: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 14,
-    fontSize: 16,
-    color: '#1A1A1A',
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#EDEFF2',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  buttonContainer: {
-    marginTop: 20,
-  },
-  signupButton: {
-    backgroundColor: '#38A169',
-    borderRadius: 12,
-    padding: 16,
     alignItems: 'center',
   },
-  signupButtonDisabled: {
-    backgroundColor: '#95C9A6',
+  inputCard: {
+    width: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    borderRadius: 24,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 15 },
+    shadowOpacity: 0.25,
+    shadowRadius: 25,
+    elevation: 12,
   },
-  signupButtonText: {
-    color: '#fff',
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  inputIcon: {
+    marginLeft: 12,
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
     fontSize: 16,
-    fontWeight: '700',
+    color: '#111827',
   },
-  loginContainer: {
+  buttonWrapper: {
+    width: '100%',
+    marginTop: 28,
+  },
+  signupButton: {
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  buttonGradient: {
+    paddingVertical: 16,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  footer: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 24,
   },
-  loginText: {
-    fontSize: 14,
+  footerText: {
+    fontSize: 15,
     color: '#fff',
-    textShadowColor: 'rgba(0, 0, 0, 0.2)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+    opacity: 0.8,
   },
-  loginLink: {
-    fontSize: 14,
-    color: '#38A169',
-    fontWeight: '600',
-    textShadowColor: 'rgba(0, 0, 0, 0.2)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+  footerLink: {
+    fontSize: 15,
+    color: '#FCD34D',
+    fontWeight: '700',
+    marginLeft: 6,
+  },
+  auroraEffect: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 200,
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
   },
 });
 

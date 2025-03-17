@@ -105,7 +105,7 @@ const SellerLoginScreen = () => {
         {/* Lien pour inscription */}
         <View style={styles.signupContainer}>
           <Text style={styles.signupText}>Pas encore de compte ? </Text>
-          <TouchableOpacity onPress={() => router.push('/sellers/signup')}>
+          <TouchableOpacity onPress={() => router.push('/sellers/home')}>
             <Text style={styles.signupLink}>Créer un compte</Text>
           </TouchableOpacity>
         </View>
