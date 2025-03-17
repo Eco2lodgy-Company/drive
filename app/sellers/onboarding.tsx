@@ -45,7 +45,7 @@ const SellerWelcomeScreen = () => {
 
               {/* Boutons spécifiques aux vendeurs */}
               <View style={styles.buttonContainer}>
-                <Link href="/seller/register" asChild>
+                <Link href="/sellers/signup" asChild>
                   <TouchableOpacity style={styles.button}>
                     <LinearGradient
                       colors={["#ff8f00", "#ff5722"]}
@@ -58,7 +58,7 @@ const SellerWelcomeScreen = () => {
                     </LinearGradient>
                   </TouchableOpacity>
                 </Link>
-                <Link href="/seller/dashboard" asChild>
+                <Link href="/sellers/home" asChild>
                   <TouchableOpacity style={styles.button}>
                     <LinearGradient
                       colors={["#00c4cc", "#0288d1"]}

@@ -5,6 +5,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'; // Pour les icônes
 import Home from './home';
+import HistoriqueLivraisonsScreen from './screens/historique';
+import ProfileScreen from './screens/profile';
 
 // Créez des écrans simples pour chaque onglet
 function AccueilScreen() {
@@ -57,9 +59,11 @@ export default function App() {
           tabBarInactiveTintColor: 'gray', // Couleur des onglets inactifs
         })}
       >
-        <Tab.Screen name="Accueil" component={Home} />
-        <Tab.Screen name="Livraisons" component={LivraisonsScreen} />
-        <Tab.Screen name="Profil" component={ProfilScreen} />
+        <Tab.Screen name="Accueil" component={Home} options={{ headerShown: false }}/>
+        
+        <Tab.Screen name="Historique" component={HistoriqueLivraisonsScreen} options={{ headerShown: false }} />
+        <Tab.Screen name="Livraisons" component={LivraisonsScreen} options={{ headerShown: false }} />
+        <Tab.Screen name="Profil" component={ProfileScreen} options={{ headerShown: false }}/>
       </Tab.Navigator>
     </NavigationContainer>
   );
