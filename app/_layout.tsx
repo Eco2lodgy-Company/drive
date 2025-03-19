@@ -1,17 +1,15 @@
-import React from 'react';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-import ProductScreen from '../app/clients/ProductScreen';
+import React, { useEffect } from "react";
+import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import "react-native-reanimated";
+import { LocationProvider } from "./LocationContext"; // Import du contexte de localisation
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
   useEffect(() => {
@@ -25,20 +23,19 @@ export default function RootLayout() {
   }
 
   return (
+    <LocationProvider>
       <Stack>
-
-        {/* // Importing the clients side screens */}
+        {/* Clients */}
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="signin" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="signup" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="sellers/onboarding" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="clients/onboarding" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="clients/login" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="clients/signup" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="clients/home" options={{ presentation: 'modal',headerShown: false }} />
-        <Stack.Screen name="clients/productScreen" options={{ presentation: 'modal',headerShown: false }}  />
-        <Stack.Screen name="clients/cart" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="client/profile" options={{presentation: 'modal', headerShown: false }} />
+        <Stack.Screen name="signin" options={{ presentation: "modal" }} />
+        <Stack.Screen name="signup" options={{ presentation: "modal" }} />
+        <Stack.Screen name="clients/onboarding" options={{ presentation: "modal" }} />
+        <Stack.Screen name="clients/login" options={{ presentation: "modal" }} />
+        <Stack.Screen name="clients/signup" options={{ presentation: "modal" }} />
+        <Stack.Screen name="clients/home" options={{ presentation: "modal", headerShown: false }} />
+        <Stack.Screen name="clients/productScreen" options={{ presentation: "modal", headerShown: false }} />
+        <Stack.Screen name="clients/cart" options={{ presentation: "modal" }} />
+        <Stack.Screen name="clients/profile" options={{ presentation: "modal", headerShown: false }} />
         <Stack.Screen name="clients/shops" options={{ headerShown: false }} />
         <Stack.Screen name="clients/notifications" options={{ headerShown: false }} />
         <Stack.Screen name="clients/shopProfile" options={{ headerShown: false }} />
@@ -49,10 +46,10 @@ export default function RootLayout() {
         <Stack.Screen name="clients/ProfileEditScreen" options={{ headerShown: false }} />
         <Stack.Screen name="clients/shopOption" options={{ headerShown: false }} />
 
-        {/*ui ajouter*/}
+        {/* Deliverers */}
         <Stack.Screen name="deliverer/home" options={{ headerShown: false }} />
 
-        {/* sellers side screens */}
+        {/* Sellers */}
         <Stack.Screen name="sellers/login" options={{ headerShown: false }} />
         <Stack.Screen name="sellers/signup" options={{ headerShown: false }} />
         <Stack.Screen name="sellers/ShopCreationScreen" options={{ headerShown: false }} />
@@ -63,10 +60,7 @@ export default function RootLayout() {
         <Stack.Screen name="sellers/addProduct" options={{ headerShown: false }} />
         <Stack.Screen name="sellers/editProduct" options={{ headerShown: false }} />
         <Stack.Screen name="sellers/ordersDetails" options={{ headerShown: false }} />
-
-
-
-        
       </Stack>
+    </LocationProvider>
   );
 }
