@@ -26,7 +26,11 @@ const SellerSignupScreen = () => {
 
   const [formData, setFormData] = useState({
     name: '',
+    prenom: '',
+    phone: '',
+    adress: '',
     email: '',
+    role: 'Vendeur',
     password: '',
     confirmPassword: '',
   });
@@ -124,6 +128,41 @@ const SellerSignupScreen = () => {
                       placeholder="Votre nom"
                       placeholderTextColor="#9CA3AF"
                       autoCapitalize="words"
+                    />
+                  </View>
+
+                  <View style={styles.inputWrapper}>
+                    <Icon name="user" size={22} color="#10B981" style={styles.inputIcon} />
+                    <TextInput
+                      style={styles.input}
+                      value={formData.prenom}
+                      onChangeText={(text) => handleChange('prenom', text)}
+                      placeholder="Votre prénom"
+                      placeholderTextColor="#9CA3AF"
+                      autoCapitalize="words"
+                    />
+                  </View>
+
+                  <View style={styles.inputWrapper}>
+                    <Icon name="phone" size={22} color="#10B981" style={styles.inputIcon} />
+                    <TextInput
+                      style={styles.input}
+                      value={formData.phone}
+                      onChangeText={(text) => handleChange('phone', text)}
+                      placeholder="Numéro de téléphone"
+                      placeholderTextColor="#9CA3AF"
+                      keyboardType="phone-pad"
+                    />
+                  </View>
+
+                  <View style={styles.inputWrapper}>
+                    <Icon name="map-pin" size={22} color="#10B981" style={styles.inputIcon} />
+                    <TextInput
+                      style={styles.input}
+                      value={formData.adress}
+                      onChangeText={(text) => handleChange('adress', text)}
+                      placeholder="Votre adresse"
+                      placeholderTextColor="#9CA3AF"
                     />
                   </View>
 
