@@ -1,5 +1,5 @@
 // SellerSignupScreen.js
-import React, { useState, useRef, useEffect } from 'react';
+import React, {useContext, useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -17,12 +17,13 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Feather';
-
+import { LocationContext } from "../LocationContext"; // Import du contexte
 const SellerSignupScreen = () => {
   const router = useRouter();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const titleAnim = useRef(new Animated.Value(0)).current;
   const buttonScale = useRef(new Animated.Value(1)).current;
+  const { location, errorMsg } = useContext(LocationContext);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -30,12 +31,13 @@ const SellerSignupScreen = () => {
     phone: '',
     adress: '',
     email: '',
+    longitude: location.longitude,
+    latitude: location.latitude,
     role: 'Vendeur',
     password: '',
     confirmPassword: '',
   });
   const [isLoading, setIsLoading] = useState(false);
-
   useEffect(() => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
@@ -74,7 +76,8 @@ const SellerSignupScreen = () => {
   };
 
   const handleStart = () => {
-    router.push('/sellers/home');
+    //router.push('/sellers/home');
+    console.log(formData);
   };
 
   return (
