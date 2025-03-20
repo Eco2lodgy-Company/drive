@@ -12,6 +12,7 @@ import {
   Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { JWT_SECRET } from '../../credentials';
 
 const SellerLoginScreen = () => {
   const router = useRouter();

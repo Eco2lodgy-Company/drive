@@ -4,7 +4,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import "react-native-reanimated";
 import { LocationProvider } from "./LocationContext"; // Import du contexte de localisation
-
+import { AuthProvider } from "../authContext"; // Import du contexte d'authentification
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -23,6 +23,7 @@ export default function RootLayout() {
   }
 
   return (
+    <AuthProvider>
     <LocationProvider>
       <Stack>
         {/* Clients */}
@@ -62,5 +63,6 @@ export default function RootLayout() {
         <Stack.Screen name="sellers/ordersDetails" options={{ headerShown: false }} />
       </Stack>
     </LocationProvider>
+    </AuthProvider>
   );
 }

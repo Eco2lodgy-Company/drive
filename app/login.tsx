@@ -9,15 +9,18 @@ import {
     KeyboardAvoidingView,
     Platform,
   } from "react-native";
-  import React, { useEffect, useRef, useState } from "react";
+  import React, { useContext, useEffect, useRef, useState } from "react";
   import { Link, Stack, useRouter } from "expo-router";
   import { LinearGradient } from "expo-linear-gradient";
   import { MaterialIcons } from "@expo/vector-icons";
+  import { AuthContext } from "@/authContext";
+  import AsyncStorage from "@react-native-async-storage/async-storage";
   
   const BuyerSignInScreen = () => {
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const router = useRouter();
     const [email, setEmail] = useState("");
+    const { login } = useContext(AuthContext);
     const [password, setPassword] = useState("");
   
     useEffect(() => {
@@ -26,13 +29,44 @@ import {
         duration: 1000,
         useNativeDriver: true,
       }).start();
+
+      
     }, [fadeAnim]);
   
-    const handleSignIn = () => {
-      // Logique de connexion ici (ex. : appel API)
-      console.log("Email:", email, "Password:", password);
-      router.push("/buyer/dashboard"); // Redirection après connexion (exemple)
+    const getUserData = async () => {
+      try {
+        const userData = await AsyncStorage.getItem("user");
+        if (userData !== null) {
+          return JSON.parse(userData); // Convertir la chaîne JSON en objet
+        }
+        return null;
+      } catch (error) {
+        console.error("Erreur lors de la récupération des données :", error);
+        return null;
+      }
     };
+    const handleSignIn = async () => {
+      //console.log(email,password);
+      const response = await login(email, password);
+      
+      if (response?.message) {
+        console.log(response.message); // Afficher un popup d'alerte
+        
+      }else{
+        //console.log(response.email);
+        const userRole = await getUserData();
+        console.log(userRole);
+        if(userRole.role === "Vendeur"){
+          router.push("/sellers/home");
+        }else if(userRole.role === "Client"){
+          router.push("/clients/home");
+        }else if(userRole.role === "Livreur"){
+          router.push("/deliverer/home");
+        }
+      }
+
+    };
+    
   
     return (
       <>
