@@ -14,6 +14,7 @@ import {
   import { LinearGradient } from "expo-linear-gradient";
   import { MaterialIcons } from "@expo/vector-icons";
   import { AuthContext } from "@/authContext";
+  import { Alert } from "react-native";
   import AsyncStorage from "@react-native-async-storage/async-storage";
   
   const BuyerSignInScreen = () => {
@@ -50,7 +51,7 @@ import {
       const response = await login(email, password);
       
       if (response?.message) {
-        console.log(response.message); // Afficher un popup d'alerte
+        Alert.alert("mot de passe ou email incorrect !"); // Afficher un popup d'alerte
         
       }else{
         //console.log(response.email);
