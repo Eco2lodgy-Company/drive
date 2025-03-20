@@ -104,7 +104,7 @@ const SellerSignupScreen = () => {
           useNativeDriver: true,
         }).start(() => {
           setTimeout(() => {
-            router.push('/sellers/login');
+            router.push('/sellers/ShopCreationScreen');
           }, 1500);
         });
       }
