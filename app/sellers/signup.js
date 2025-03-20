@@ -1,6 +1,6 @@
 // SellerSignupScreen.js
-import React, {useContext, useState, useRef, useEffect } from 'react';
-//import { JWT_SECRET } from '@env';
+import React, { useContext, useState, useRef, useEffect } from 'react';
+import { JWT_SECRET } from '../../credentials';
 import {
   View,
   Text,
@@ -18,27 +18,28 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Feather';
-import { LocationContext } from "../LocationContext"; // Import du contexte
+import { LocationContext } from "../LocationContext";
+
 const SellerSignupScreen = () => {
   const router = useRouter();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const titleAnim = useRef(new Animated.Value(0)).current;
   const buttonScale = useRef(new Animated.Value(1)).current;
+  const successAnim = useRef(new Animated.Value(0)).current;
   const { location, errorMsg } = useContext(LocationContext);
-const JWT_SECRET = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyQWNjb3VudEluZm9zIjoiYWRtaW5AZ21haWwuY29tIiwic3ViIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzQyNDY0MzA1LCJleHAiOjE3NDI0Njc5MDV9.PPbR08dkKrY6d5Uc4hH5Ic8lUeTDBElikimqbxfcqmA";
   const [formData, setFormData] = useState({
     name: '',
     prenom: '',
     phone: '',
     adress: '',
     email: '',
-    //longitude: location.longitude,
-    //latitude: location.latitude,
     role: 'Vendeur',
     password: '',
     confirmPassword: '',
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+
   useEffect(() => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
@@ -78,25 +79,41 @@ const JWT_SECRET = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyQWNjb3VudEluZm9zIjoiYWRtaW5AZ21
 
   const handleStart = async () => {
     try {
-      console.log('Données à envoyer:', formData); // Vérifie ce que contient formData
-  
-      const response = await fetch(`http://195.35.24.128:8081/swagger-ui/index.html#/Users/addCompte`, {
+      setIsLoading(true);
+      console.log('Données à envoyer:', formData);
+
+      const response = await fetch(`http://195.35.24.128:8081/api/user/new`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${JWT_SECRET}`,
-          'Content-Type': 'application/json', // Spécifie que tu envoies du JSON
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData), // Convertit formData en JSON
+        body: JSON.stringify(formData),
       });
-  
+
       const data = await response.json();
       console.log('Réponse API:', data);
-  
+
+      if (response.ok) {
+        setIsLoading(false);
+        setShowSuccess(true);
+
+        Animated.timing(successAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }).start(() => {
+          setTimeout(() => {
+            router.push('/sellers/ShopCreationScreen');
+          }, 1500);
+        });
+      }
+
     } catch (error) {
       console.error('Erreur lors de la requête POST:', error);
+      setIsLoading(false);
     }
   };
-  
 
   return (
     <SafeAreaView style={styles.safeContainer}>
@@ -225,6 +242,28 @@ const JWT_SECRET = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyQWNjb3VudEluZm9zIjoiYWRtaW5AZ21
                   </View>
                 </View>
 
+                {showSuccess && (
+                  <Animated.View
+                    style={[
+                      styles.successMessage,
+                      {
+                        opacity: successAnim,
+                        transform: [
+                          {
+                            scale: successAnim.interpolate({
+                              inputRange: [0, 1],
+                              outputRange: [0.8, 1],
+                            }),
+                          },
+                        ],
+                      },
+                    ]}
+                  >
+                    <Icon name="check-circle" size={24} color="#fff" />
+                    <Text style={styles.successText}>Inscription réussie !</Text>
+                  </Animated.View>
+                )}
+
                 <Animated.View style={[styles.buttonWrapper, { transform: [{ scale: buttonScale }] }]}>
                   <TouchableOpacity
                     style={styles.signupButton}
@@ -346,6 +385,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 16,
     color: '#111827',
+  },
+  successMessage: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(16, 185, 129, 0.9)',
+    padding: 15,
+    borderRadius: 12,
+    marginTop: 20,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  successText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 10,
   },
   buttonWrapper: {
     width: '100%',
